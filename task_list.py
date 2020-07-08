@@ -1,10 +1,6 @@
 from datetime import datetime
 import mysql.connector
-<<<<<<< Updated upstream
-from config import db_config
-=======
 import config
->>>>>>> Stashed changes
 
 insert_task = "INSERT INTO tasks (title, completed, creation_date, is_child_task, parent_id) VALUES (%s, %s, %s, %s, %s)"
 get_incompleted_tasks = "SELECT * FROM tasks WHERE completed = 0"
