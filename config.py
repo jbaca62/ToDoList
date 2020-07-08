@@ -6,4 +6,4 @@ DB_CONFIG = {
                 "database": "todolist",
                 }
 
-API_URL = 'http://localhost:5000'
+API_URL = 'http://192.168.43.33:5000'
