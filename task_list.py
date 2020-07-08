@@ -9,7 +9,7 @@ set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
 
 class Task:
     db_config = {
-                "host": "192.168.0.122",
+                "host": "localhost",
                 "port": "3306",
                 "user": "todolist",
                 "password": "todolist",

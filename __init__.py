@@ -36,5 +36,5 @@ def complete_task():
         Task.mark_task_as_complete(task_id)
         return "Completed test"
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
