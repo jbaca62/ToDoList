@@ -25,6 +25,12 @@ def add_task():
         
         return "Added " + task_title + " to list"
 
+""" 
+    Returned Schema:
+    {data:
+        [{id: , title: }]
+    }
+"""
 @app.route('/list', methods=['GET'])
 def list_tasks():
     if request.method == 'GET':
