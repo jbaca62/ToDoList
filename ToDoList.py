@@ -11,6 +11,8 @@ while(command != "exit"):
     user_input = input(">>").split(" ")
     command = user_input[0]
     params = user_input[1:]
+
+    """ ADD """
     if command == "add":
         if params[0] != "subtask":
             task_title = params[0]
@@ -38,14 +40,27 @@ while(command != "exit"):
             else:
                 result = ToDoAPI.add_task(task_title, is_child=True,parent_id=found_tasks[0].id)
                 print(result)
-
+    """ LIST """
     if command == "list":
-        tasks = ToDoAPI.get_task_list()      
-        for i in range(len(tasks)):
-                print(str(i+1) + ".\t" \
-                + tasks[i].title \
-                + "\t" + tasks[i].creation_date)
+        tasks = ToDoAPI.get_task_list()
+        parent_tasks = []
+        child_tasks = []
+        for t in tasks:
+            if t.is_child_task == 0:
+                parent_tasks.append(t)
+            else:
+                child_tasks.append(t)
 
+        gui_task_count = 1
+        for p in parent_tasks:
+            print(str(gui_task_count) + ".\t" \
+                + p.title) 
+            for c in child_tasks:
+                if c.parent_id == p.id:
+                    print("     -\t" + c.title)
+            gui_task_count += 1
+
+    """ COMPLETE """
     if command == "complete":
         title = params[0]
         found_tasks = []

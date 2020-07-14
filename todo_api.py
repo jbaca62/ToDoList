@@ -4,11 +4,13 @@ import config
 
 class ToDoAPI:
 
+    
     def get_task_list():
         url = config.API_URL + '/list'
         response = requests.get(url)
         tasks = []
-        for t in response.json():
+        data = response.json()['data']
+        for t in data:
             tasks.append(Task.tuple_to_task(t))
         return tasks
 

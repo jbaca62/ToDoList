@@ -28,7 +28,14 @@ def add_task():
 """ 
     Returned Schema:
     {data:
-        [{id: , title: }]
+        [{id: ,
+        title: ,
+        completed: ,
+        creation_date: ,
+        due_data: ,
+        is_child_task: ,
+        parent_id: 
+        }]
     }
 """
 @app.route('/list', methods=['GET'])
@@ -38,7 +45,6 @@ def list_tasks():
         for t in Task.get_incompleted_tasks():
             tasks.append(Task.tuple_to_dic(t))
         data = {"data": tasks}
-        print(data)
         return jsonify(data)
 
 @app.route('/complete', methods=['POST'])

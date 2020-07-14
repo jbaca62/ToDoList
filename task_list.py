@@ -8,18 +8,23 @@ get_all_tasks = "SELECT * FROM tasks"
 set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
 
 class Task:
-    def __init__(self, task_id, title, completed=False, creation_date=datetime.now()):
-        self.id = task_id
+    def __init__(self, id, title, completed=False, \
+        creation_date=datetime.now(), is_child_task=0, \
+        parent_id=0):
+        self.id = id
         self.title = title
         self.completed = completed
         self.creation_date = creation_date
+        self.is_child_task = is_child_task
+        self.parent_id = parent_id
 
     def tuple_to_task(data):
-        new_task = Task(data[0], data[1], data[2], data[3])
+        new_task = Task(data["id"], data['title'],\
+            data["completed"], data['creation_date'],\
+            data["is_child_task"], data["parent_id"])
         return new_task
 
     def tuple_to_dic(data):
-        print('Data: ' + str(data))
         new_dict = {}
         new_dict["id"] = data[0]
         new_dict["title"] = data[1]
