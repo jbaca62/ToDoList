@@ -19,7 +19,13 @@ export class TasksComponent implements OnInit {
 
   getTasks(): void{
     this.taskService.getTasks()
-    .subscribe(tasks => this.tasks = tasks);
+    .subscribe(tasks => this.taskStuff(tasks));
+    
+  }
+
+  taskStuff(param: Task[]): void{
+    console.log(param)
+    this.tasks = param;
   }
 
 }

@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 import sys
 from task_list import Task
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def homepage():
@@ -26,8 +28,12 @@ def add_task():
 @app.route('/list', methods=['GET'])
 def list_tasks():
     if request.method == 'GET':
-        tasks = Task.get_incompleted_tasks()
-        return jsonify(tasks)
+        tasks = []
+        for t in Task.get_incompleted_tasks():
+            tasks.append(Task.tuple_to_dic(t))
+        data = {"data": tasks}
+        print(data)
+        return jsonify(data)
 
 @app.route('/complete', methods=['POST'])
 def complete_task():

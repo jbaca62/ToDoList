@@ -17,6 +17,12 @@ class Task:
     def tuple_to_task(data):
         new_task = Task(data[0], data[1], data[2], data[3])
         return new_task
+
+    def tuple_to_dic(data):
+        new_dict = {}
+        new_dict["id"] = data[0]
+        new_dict["title"] = data[1]
+        return new_dict
         
     def add_task(title, completed=False, creation_date=datetime.now(), \
                     is_child=False, parent_id=0):
