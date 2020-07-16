@@ -2,11 +2,11 @@ from datetime import datetime
 import mysql.connector
 import config
 
-insert_task = "INSERT INTO tasks (title, completed, creation_date, is_child_task, parent_id) VALUES (%s, %s, %s, %s, %s)"
-get_incompleted_tasks = "SELECT * FROM tasks WHERE completed = 0"
-get_all_tasks = "SELECT * FROM tasks"
-set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
-
+SQL_insert_task = "INSERT INTO tasks (title, completed, creation_date, is_child_task, parent_id) VALUES (%s, %s, %s, %s, %s)"
+SQL_get_incomplete_tasks = "SELECT * FROM tasks WHERE completed = 0"
+SQL_get_all_tasks = "SELECT * FROM tasks"
+SQL_set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
+SQL_get_task_by_id = "SELECT * FROM tasks WHERE id = %s"
 class Task:
     def __init__(self, id, title, completed=False, \
         creation_date=datetime.now(), is_child_task=0, \
@@ -46,9 +46,12 @@ class Task:
             database=config.DB_CONFIG["database"]
         )
         mycursor = mydb.cursor()
-        mycursor.execute(insert_task, vals)
+        mycursor.execute(SQL_insert_task, vals)
+        task_id = mycursor.lastrowid
         mydb.commit()
         mycursor.close()
+        return task_id
+
 
     def list_tasks(tasks=None):
         if tasks == None:
@@ -56,7 +59,7 @@ class Task:
         for t in tasks:
             print(t.title)
 
-    def get_incompleted_tasks():
+    def get_incomplete_tasks():
         mydb = mysql.connector.connect(
             host=config.DB_CONFIG["host"],
             port=config.DB_CONFIG["port"],
@@ -65,7 +68,7 @@ class Task:
             database=config.DB_CONFIG["database"]
         )
         mycursor = mydb.cursor()
-        mycursor.execute(get_incompleted_tasks)
+        mycursor.execute(SQL_get_incomplete_tasks)
         result = mycursor.fetchall()
         incomplete_tasks = []
         for t in result:
@@ -75,9 +78,26 @@ class Task:
         mycursor.close()
         return incomplete_tasks
 
+    def get_task_by_id(task_id):
+        mydb = mysql.connector.connect(
+            host=config.DB_CONFIG["host"],
+            port=config.DB_CONFIG["port"],
+            user=config.DB_CONFIG["user"],
+            password=config.DB_CONFIG["password"],
+            database=config.DB_CONFIG["database"]
+        )
+        mycursor = mydb.cursor()
+        task_id = (task_id,)
+        mycursor.execute(SQL_get_task_by_id, task_id)
+        result = mycursor.fetchone()
+        mycursor.close()
+        return tuple_to_dic(result)
+
+
+
     def complete_task(title):
         found_tasks = []
-        for t in Task.get_incompleted_tasks():
+        for t in Task.get_incomplete_tasks():
             if t.title == title:
                 found_tasks.append(t)
         if len(found_tasks) == 0:
@@ -112,7 +132,7 @@ class Task:
         )
         mycursor = mydb.cursor()
         task_id = (task_id,)
-        mycursor.execute(set_task_to_complete_by_id, task_id)
+        mycursor.execute(SQL_set_task_to_complete_by_id, task_id)
         mydb.commit()
         mycursor.close()
 
@@ -134,7 +154,7 @@ class Task:
             database=config.DB_CONFIG["database"]
         )
         mycursor = mydb.cursor()
-        mycursor.execute(get_all_tasks)
+        mycursor.execute(SQL_get_all_tasks)
         result = mycursor.fetchall()
         task_list = []
         for t in result:

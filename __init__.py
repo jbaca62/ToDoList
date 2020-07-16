@@ -17,15 +17,17 @@ def add_task():
         data = request.json
         print(type(data))
         print(data)
-        task_title = data["title"]
+        title = data["title"]
         is_child = data["is_child"]
         if is_child:
             parent_id = data["parent_id"]
-            Task.add_task(task_title, is_child=is_child, parent_id=parent_id)
+            task_id = Task.add_task(title, is_child=is_child, parent_id=parent_id)
         else:       
-            Task.add_task(task_title)
+            task_id = Task.add_task(title)
         
-        return "Added " + task_title + " to list"
+        task_dic = Task.get_task_by_id(task_id)
+        print(task_dic)
+        return jsonify(task_dic)
 
 """ 
     Returned Schema:

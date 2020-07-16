@@ -44,9 +44,10 @@ export class TasksComponent implements OnInit {
     var task = {"title": title, "is_child": false};
     this.taskService.addTask(task as unknown as Task)
       .subscribe(hero => {
-        this.tasks.push(hero);
+        console.log(hero);
       });
   }
+
 
 
 }
