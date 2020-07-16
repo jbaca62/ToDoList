@@ -134,8 +134,8 @@ class Task:
         mycursor = mydb.cursor()
         task_id = (task_id,)
         mycursor.execute(SQL_set_task_to_complete_by_id, task_id)
-        mydb.commit()
         task_id = mycursor.lastrowid
+        mydb.commit()
         mycursor.close()
         return task_id
 
