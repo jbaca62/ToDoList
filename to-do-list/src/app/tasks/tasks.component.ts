@@ -43,8 +43,16 @@ export class TasksComponent implements OnInit {
     if (!title) { return; }
     var task = {"title": title, "is_child": false};
     this.taskService.addTask(task as unknown as Task)
-      .subscribe(hero => {
-        console.log(hero);
+      .subscribe(task => {
+        this.tasks.push(task);
+      });
+  }
+
+  completeTask(task: Task): void{
+    this.tasks = this.tasks.filter(t => t !== task);
+    this.taskService.completeTask(task)
+      .subscribe(t => {
+        this.tasks = this.tasks.filter(p => p !== t)
       });
   }
 

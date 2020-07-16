@@ -54,6 +54,7 @@ def list_tasks():
 @app.route('/complete', methods=['POST'])
 def complete_task():
     if request.method == 'POST':
+        print(request.json)
         task_id = request.json["task_id"]
         Task.mark_task_as_complete(task_id)
         return "Completed test"

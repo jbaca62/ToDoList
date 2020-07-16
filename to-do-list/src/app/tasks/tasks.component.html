@@ -2,9 +2,11 @@
 <ol class="parnet_tasks">
   <li *ngFor="let parent of tasks">
       <span>{{parent.title}}</span>
+      <button (click)="completeTask(parent)">Complete</button>
       <ul class="child_tasks">
         <li *ngFor="let child of parent.child_tasks">
           <span>{{child.title}}</span>
+          <button (click)="completeTask(parent)">Complete</button>
         </li>
       </ul>
   </li>

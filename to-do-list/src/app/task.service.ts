@@ -24,6 +24,10 @@ export class TaskService {
   addTask(task: Task): Observable<Task>{
     return this.http.post<Task>(this.tasksUrl + "/add", task, this.httpOptions);
   }
+
+  completeTask(task: Task): Observable<Task>{
+    return this.http.post<Task>(this.tasksUrl + "/complete", task, this.httpOptions);
+  }
 }
 
 /* getHeroes(): Observable<Hero[]> {
