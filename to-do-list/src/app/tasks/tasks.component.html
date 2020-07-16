@@ -1,6 +1,20 @@
 <h2>My Tasks</h2>
-<ul class="tasks">
-  <li *ngFor="let task of tasks">
-      <span>{{task.title}}</span>
+<ol class="parnet_tasks">
+  <li *ngFor="let parent of tasks">
+      <span>{{parent.title}}</span>
+      <ul class="child_tasks">
+        <li *ngFor="let child of parent.child_tasks">
+          <span>{{child.title}}</span>
+        </li>
+      </ul>
   </li>
-</ul>
+</ol>
+<div>
+  <label>Task title:
+    <input #taskTitle />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="addTask(taskTitle.value); taskTitle.value=''">
+    Add
+  </button>
+</div>

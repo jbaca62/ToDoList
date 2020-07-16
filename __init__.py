@@ -15,6 +15,8 @@ def homepage():
 def add_task():
     if request.method == 'POST':
         data = request.json
+        print(type(data))
+        print(data)
         task_title = data["task_title"]
         is_child = data["is_child"]
         if is_child:

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {Task} from './task';
-import {TASKS} from './mock-tasks';
 import {Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -11,15 +10,19 @@ export class TaskService {
 
   constructor(private http:HttpClient) { }
 
-  private tasksUrl = 'http://192.168.43.33:5000/list';  // URL to web api
+  private tasksUrl = 'http://192.168.43.33:5000';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   getTasks(): Observable<Task[]>{
-    let resp = this.http.get<Task[]>(this.tasksUrl);
+    let resp = this.http.get<Task[]>(this.tasksUrl + "/list");
     return resp;
+  }
+
+  addTask(task: Task): Observable<Task>{
+    return this.http.post<Task>(this.tasksUrl + "/add", task, this.httpOptions);
   }
 }
 

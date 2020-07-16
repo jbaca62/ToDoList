@@ -9,7 +9,7 @@ import {TaskService} from '../task.service';
 })
 export class TasksComponent implements OnInit {
 
-  tasks: Task[];
+  tasks: Task[] = [];
 
   constructor(private taskService:TaskService) { }
 
@@ -19,13 +19,33 @@ export class TasksComponent implements OnInit {
 
   getTasks(): void{
     this.taskService.getTasks()
-    .subscribe(tasks => this.taskStuff(tasks));
+    .subscribe(tasks => this.sortTasks(tasks));
     
   }
 
-  taskStuff(param: any): void{
-    console.log(param.data)
-    this.tasks = param.data;
+  sortTasks(param: any): void{
+    param.data.forEach(task => {
+      if (task.is_child_task == false) {
+        this.tasks.push(task)
+        task.child_tasks = [];
+      } else {
+        this.tasks.forEach(p =>{
+          if (p.id == task.parent_id){
+            p.child_tasks.push(task);
+          }
+        });
+      }
+    });
   }
+
+  addTask(title: string): void{
+    title = title.trim();
+    if (!title) { return; }
+    this.taskService.addTask({ title } as Task)
+      .subscribe(hero => {
+        this.tasks.push(hero);
+      });
+  }
+
 
 }
