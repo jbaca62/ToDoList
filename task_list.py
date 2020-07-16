@@ -134,10 +134,9 @@ class Task:
         mycursor = mydb.cursor()
         task_id = (task_id,)
         mycursor.execute(SQL_set_task_to_complete_by_id, task_id)
-        task_id = mycursor.lastrowid
+        mycursor.lastrowid
         mydb.commit()
         mycursor.close()
-        return task_id
 
     """ def sync_database(self):
         db_tasks = self.get_database_tasks()

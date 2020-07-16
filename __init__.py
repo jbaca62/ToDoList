@@ -56,7 +56,7 @@ def complete_task():
     if request.method == 'POST':
         print(request.json)
         task_id = request.json["id"]
-        task_id = Task.mark_task_as_complete(task_id)
+        Task.mark_task_as_complete(task_id)
         print("id returned from completion: ", task_id)
         completed_task = Task.get_task_by_id(task_id)
         return jsonify(complete_task)
