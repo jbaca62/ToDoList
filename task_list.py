@@ -91,7 +91,7 @@ class Task:
         mycursor.execute(SQL_get_task_by_id, task_id)
         result = mycursor.fetchone()
         mycursor.close()
-        return tuple_to_dic(result)
+        return Task.tuple_to_dic(result)
 
 
 
