@@ -11,7 +11,7 @@ export class TaskService {
 
   constructor(private http:HttpClient) { }
 
-  private tasksUrl = 'http://127.0.0.1:5000/list';  // URL to web api
+  private tasksUrl = 'http://192.168.43.33:5000/list';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

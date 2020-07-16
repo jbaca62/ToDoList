@@ -23,9 +23,9 @@ export class TasksComponent implements OnInit {
     
   }
 
-  taskStuff(param: Task[]): void{
-    console.log(param)
-    this.tasks = param;
+  taskStuff(param: any): void{
+    console.log(param.data)
+    this.tasks = param.data;
   }
 
 }
