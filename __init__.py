@@ -17,7 +17,7 @@ def add_task():
         data = request.json
         print(type(data))
         print(data)
-        task_title = data["task_title"]
+        task_title = data["title"]
         is_child = data["is_child"]
         if is_child:
             parent_id = data["parent_id"]

@@ -41,7 +41,8 @@ export class TasksComponent implements OnInit {
   addTask(title: string): void{
     title = title.trim();
     if (!title) { return; }
-    this.taskService.addTask({ title } as Task)
+    var task = {"title": title, "is_child": false};
+    this.taskService.addTask(task as unknown as Task)
       .subscribe(hero => {
         this.tasks.push(hero);
       });
