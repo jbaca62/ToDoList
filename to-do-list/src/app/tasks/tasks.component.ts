@@ -10,6 +10,7 @@ import {TaskService} from '../task.service';
 export class TasksComponent implements OnInit {
 
   tasks: Task[] = [];
+  is_subtask: Boolean = true;
 
   constructor(private taskService:TaskService) { }
 

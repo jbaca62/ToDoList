@@ -47,7 +47,7 @@ def list_tasks():
     if request.method == 'GET':
         tasks = []
         for t in Task.get_incomplete_tasks():
-            tasks.append(Task.tuple_to_dic(t))
+            tasks.append(Task.DBtuple_to_dic(t))
         data = {"data": tasks}
         return jsonify(data)
 

@@ -6,11 +6,17 @@
       <ul class="child_tasks">
         <li *ngFor="let child of parent.child_tasks">
           <span>{{child.title}}</span>
-          <button (click)="completeTask(parent)">Complete</button>
+          <button (click)="completeTask(child)">Complete</button>
         </li>
       </ul>
   </li>
 </ol>
+<table>
+  <tr>
+    <th>Title</th>
+  </tr>
+  <tr *ngFor="let parent of tasks">{{parent.title}}</tr>
+</table>
 <div>
   <label>Task title:
     <input #taskTitle />
@@ -19,4 +25,15 @@
   <button (click)="addTask(taskTitle.value); taskTitle.value=''">
     Add
   </button>
-</div>
+  
+<!--   <label class="subtask_checkbox">Subtask:
+    <input *ng-checked="is_subtask" type="checkbox">
+  </label>
+  {{is_subtask}}
+  <div *ngIf="is_subtask">
+    <select *ngIf="is_subtask">
+
+    </select>
+  </div>
+
+</div> -->
