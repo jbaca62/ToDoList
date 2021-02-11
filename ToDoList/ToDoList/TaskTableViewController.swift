@@ -95,6 +95,10 @@ class TaskTableViewController: UITableViewController {
         switch(segue.identifier ?? ""){
         case "AddTask":
             os_log("Adding a new meal.", log: OSLog.default, type: .debug)
+            guard let taskDetailViewController = segue.destination as? TaskViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            taskDetailViewController.addState = true;
         case "ShowDetail":
             guard let taskDetailViewController = segue.destination as? TaskViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
@@ -108,8 +112,10 @@ class TaskTableViewController: UITableViewController {
                 fatalError("The selected cell is not being displayed by the table")
             }
              
+            taskDetailViewController.addState = false
             let selectedTask = tasks[indexPath.row]
             taskDetailViewController.task = selectedTask
+            
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
 
@@ -117,9 +123,11 @@ class TaskTableViewController: UITableViewController {
     }
     
     @IBAction func unwindToTaskList(sender: UIStoryboardSegue) {
-        if let sourceViewController = sender.source as? TaskViewController, let task = sourceViewController.task {
-            if let selectedIndexPath = tableView.indexPathForSelectedRow{
+        if let sourceViewController = sender.source as? TaskViewController {
+            let task = sourceViewController.task
+            if !(sourceViewController.addState!){
                 // Update existing task
+                let selectedIndexPath = tableView.indexPathForSelectedRow!
                 updateTaskDB(t:task)
                 tasks[selectedIndexPath.row] = task
                 tableView.reloadRows(at: [selectedIndexPath], with: .none)
@@ -139,14 +147,6 @@ class TaskTableViewController: UITableViewController {
     
     //MARK: Private Methods
     
-    private func loadSampleTasks() -> [Task]{
-
-        let task1 = Task(i: 1, t: "Task 1", c: false, dd: Date(), cd: "", ict: false, pi: 0);
-        let task2 = Task(i: 2, t: "Task 2", c: false, dd: Date(), cd: "", ict: false, pi: 0);
-        let task3 = Task(i: 3, t: "Sub Task 1", c: false, dd: Date(), cd: "", ict: true, pi: 2);
-        let task4 = Task(i: 4, t: "Task 4", c: false, dd: Date(), cd: "", ict: false, pi: 0)
-        return [task1, task2, task3, task4]
-    }
     
 //    private func saveTasks(){
 //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(tasks, toFile: Task.ArchiveURL.path)
@@ -169,7 +169,8 @@ class TaskTableViewController: UITableViewController {
 
         let urlSession = URLSession.shared
         
-        let jsonQuery = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
+        
+        let jsonQuery = urlSession.dataTask(with: url, completionHandler: { (data, response, error) in
             if (error != nil) {
                 print(error!.localizedDescription)
                 return
@@ -188,11 +189,11 @@ class TaskTableViewController: UITableViewController {
     }
     
     private func addTaskDB(t:Task){
-        let encoder = JSONEncoder()
-        let json = (try? encoder.encode(t))!
-        
         let urlAsString = Task.baseURL + "/add"
         let url = URL(string: urlAsString)!
+        
+        let encoder = JSONEncoder()
+        let json = (try? encoder.encode(t))!
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -201,14 +202,16 @@ class TaskTableViewController: UITableViewController {
         
         let urlSession = URLSession.shared
         
+        var returned_task:Task?
+        
         let postTask = urlSession.dataTask(with: request){ (data, response, error) in
-            if let error = error{
-                print(error)
+            if (error != nil) {
+                print(error!.localizedDescription)
+                return
             }
-            if let data = data, let dataString = String(data: data, encoding: .utf8){
-                print("Response data string: \n \(dataString)")
-            }
-            
+            let decoder = JSONDecoder()
+            returned_task = try! decoder.decode(Task.self, from: data!)
+                
         }
         postTask.resume()
     }
@@ -221,7 +224,7 @@ class TaskTableViewController: UITableViewController {
         let url = URL(string: urlAsString)!
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = json
         

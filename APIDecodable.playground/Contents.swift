@@ -1,6 +1,6 @@
 import UIKit
 
-class Task: Decodable{
+class Task: Codable{
     
     
     
@@ -13,6 +13,8 @@ class Task: Decodable{
     var creation_date:String;
     var is_child_task:Bool;
     var parent_id:Int
+    
+    static let baseURL = "http://10.95.22.4:5000"
     
     
     
@@ -57,49 +59,86 @@ class Task: Decodable{
 
 }
 
-struct TaskData: Decodable{
+struct TaskData: Codable{
     let data: [Task]
 }
 
-let urlAsString = "http://172.20.10.4:5000/list"
+let urlAsString = Task.baseURL + "/list"
 
 let url = URL(string: urlAsString)!
 
 let urlSession = URLSession.shared
 
+var tasks: [Task] = []
+
 func getTasks(){
+    
     let jsonQuery = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
         if (error != nil) {
             print(error!.localizedDescription)
         }
-        var err: NSError?
-        print(type(of: data!))
-        print(data!)
+
         
         let decoder = JSONDecoder()
         let jsonResult = try! decoder.decode(TaskData.self, from: data!)
         
-        //var jsonResult = (try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers)) as! NSDictionary
         
+        let taskItems = jsonResult.data
         
-        print(type(of: jsonResult))
-        
-        var taskItems = jsonResult.data
-        
-        print(type(of: taskItems[0]));
-        print(taskItems.count);
-        
-        for i in 0...(taskItems.count)-1
-        {
-        let y = taskItems[i]
-            print(y.completed)
-        }
-        
-        
+        tasks = taskItems
+        print("In getTasks")
+        printTasks(tasks: tasks)
+
     })
     jsonQuery.resume()
+
 }
 
-DispatchQueue.main.async(execute: {
-    getTasks()
-})
+private func addTaskDB(t:Task, completionHandler: @escaping ([Task])-> Void){
+    let encoder = JSONEncoder()
+    let json = (try? encoder.encode(t))!
+    
+    let urlAsString = Task.baseURL + "/add"
+    let url = URL(string: urlAsString)!
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.httpBody = json
+    
+    let urlSession = URLSession.shared
+    
+    var returned_task:Task? = nil
+    
+    let postTask = urlSession.dataTask(with: request){ (data, response, error) in
+        if let error = error{
+            print(error)
+        }
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200{
+            let decoder = JSONDecoder()
+            returned_task = try! decoder.decode(Task.self, from: data!)
+            tasks += [returned_task!]
+        }
+        completionHandler(tasks)
+    }
+    postTask.resume()
+}
+
+func printTasks(tasks: [Task]){
+    if tasks.isEmpty{
+        print("Task Array Empty")
+    }
+    else{
+        for t in tasks{
+            print(String(t.id) + "\t" + String(t.title))
+        }
+    }
+}
+
+func printTask(task: Task){
+    print(String(task.id) + "\t" + String(task.title))
+}
+
+getTasks()
+let new_task = Task(i: -1, t: "Test 3", c: false, dd: Date(), cd: "", ict: false, pi: 0)
+addTaskDB(t: new_task, completionHandler: printTasks)

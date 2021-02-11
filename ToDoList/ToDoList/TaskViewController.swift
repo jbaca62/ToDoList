@@ -14,17 +14,27 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
 
     
     @IBOutlet weak var titleField: UITextField!
-    @IBOutlet weak var DescriptionField: UITextView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var completeButton: UIButton!
+    @IBOutlet weak var idLabel: UILabel!
+    
+    var task = Task(i: 0, t: "", c: false, dd: Date(timeIntervalSinceNow: 18000), cd: Date(), ict: false, pi: 0);
+    var addState: Bool?//True if adding task, false if updating task. Set by segue. If nil, was not set properly
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         titleField.delegate = self
-        if let task = task{
+        guard addState != nil else{
+            fatalError("Add State equal to nil")
+        }
+        if !(addState!){
+            
+        }
+        else{
             navigationItem.title = task.title
             titleField.text = task.title
-            DescriptionField.text = task.description
+            idLabel.text = String(task.id)
             completeButton.isEnabled = !(task.completed)
         }
         updateCompleteButtonState()
@@ -48,7 +58,6 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    var task:Task?;
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -58,11 +67,8 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
             os_log("The save button was not pressed, cancelling", log: OSLog.default, type: .debug)
             return
         }
-        let title = titleField.text ?? ""
-        let description = DescriptionField.text ?? ""
-        task  = Task(i: 0, t: title, c: false, dd: Date(), cd: "", ict: false, pi: 0);
-        task?.title = title;
-        task?.completed = !(completeButton.isEnabled)
+        task.title = titleField.text ?? ""
+        task.completed = !(completeButton.isEnabled)
         
     }
     @IBAction func completeButtonTouch(_ sender: Any) {
@@ -70,11 +76,12 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
         updateCompleteButtonState()
     }
     
-    // MARK: UITestFieldDelegate
+    // MARK: UITextFieldDelegate
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // Disable the Save button while editing.
-        saveButton.isEnabled = false
+        //saveButton.isEnabled = false
     }
+
     func textFieldDidEndEditing(_ textField: UITextField){
         updateSaveButtonState()
         navigationItem.title = textField.text

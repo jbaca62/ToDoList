@@ -18,8 +18,8 @@ class Task: NSObject, NSCoding, Codable{
     var title:String;
     //var description:String;
     var completed:Bool;
-    var due_date: Date?;
-    var creation_date:String;
+    var due_date: Date;
+    var creation_date:Date;
     var is_child_task:Bool;
     var parent_id:Int
     
@@ -36,7 +36,7 @@ class Task: NSObject, NSCoding, Codable{
     }
     
     // MARK: Initialization
-    init(i:Int, t:String, c:Bool, dd:Date, cd: String, ict:Bool, pi:Int){
+    init(i:Int, t:String, c:Bool, dd:Date, cd: Date, ict:Bool, pi:Int){
         id = i;
         title = t;
         //description = d;
@@ -67,7 +67,7 @@ class Task: NSObject, NSCoding, Codable{
             os_log("Unable to decode the name for a Task object.", log: OSLog.default, type: .debug)
             return nil
         }
-        self.init(i:0, t:title, c: false, dd: Date(), cd: "", ict:false, pi:0)
+        self.init(i:0, t:title, c: false, dd: Date(), cd: Date(), ict:false, pi:0)
     }
     
 
