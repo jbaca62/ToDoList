@@ -23,7 +23,7 @@ class Task: NSObject, NSCoding, Codable{
     var is_child_task:Bool;
     var parent_id:Int
     
-    static let baseURL = "http://10.95.22.4:5000"
+    static let baseURL = "http://0.0.0.0:5000"
     
     // MARK: Archiving Paths
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!

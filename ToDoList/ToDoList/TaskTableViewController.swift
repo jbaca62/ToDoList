@@ -175,7 +175,7 @@ class TaskTableViewController: UITableViewController {
                 print(error!.localizedDescription)
                 return
             }
-            
+            print(data!)
             let decoder = JSONDecoder()
             let jsonResult = try! decoder.decode(TaskData.self, from: data!)
             
