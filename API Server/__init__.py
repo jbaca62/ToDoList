@@ -32,6 +32,16 @@ def add_task():
         return jsonify(task_dic)
 
 
+@app.route("/update", methods=["PUT"])
+def update_task():
+    if request.method == "PUT":
+        data = request.json
+        task_id = Task.update_task(data["id"], data["title"], data["completed"])
+        print(task_id)
+        task_dic = Task.get_task_by_id(task_id)
+        return jsonify(task_dic)
+
+
 """ 
     Returned Schema:
     {data:

@@ -18,17 +18,14 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var completeButton: UIButton!
     @IBOutlet weak var idLabel: UILabel!
     
-    var task = Task(i: 0, t: "", c: false, dd: Date(timeIntervalSinceNow: 18000), cd: Date(), ict: false, pi: 0);
-    var addState: Bool?//True if adding task, false if updating task. Set by segue. If nil, was not set properly
+    var task = Task(i: 0, t: "", c: false, dd: "", cd: "", ict: false, pi: 0); // Does this need to be initialized or can it be replaced by Task?
+    var addState: Bool?//True if adding task, false if updating task. Set by segue.
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         titleField.delegate = self
-        guard addState != nil else{
-            fatalError("Add State equal to nil")
-        }
-        if !(addState!){
+        if (addState == nil){
             
         }
         else{
@@ -71,20 +68,26 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
         task.completed = !(completeButton.isEnabled)
         
     }
+    
+    // MARK: Events
     @IBAction func completeButtonTouch(_ sender: Any) {
         completeButton.isEnabled = false
         updateCompleteButtonState()
     }
     
     // MARK: UITextFieldDelegate
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        // Disable the Save button while editing.
-        //saveButton.isEnabled = false
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField){
+//    func textFieldDidBeginEditing(_ textField: UITextField) {
+//        // Disable the Save button while editing.
+//        //saveButton.isEnabled = false
+//    }
+//
+//    func textFieldDidEndEditing(_ textField: UITextField){
+//        updateSaveButtonState()
+//        navigationItem.title = textField.text
+//    }
+//
+    func textFieldDidChangeSelection(_ textField: UITextField) {
         updateSaveButtonState()
-        navigationItem.title = textField.text
     }
     
     // MARK: Private Methods

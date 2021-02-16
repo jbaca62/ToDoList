@@ -9,34 +9,23 @@
 import Foundation
 import os.log
 
-class Task: NSObject, NSCoding, Codable{
-   // Will be usign Codable in future
+class Task: Codable{
     
     
     // MARK: Properties
     var id:Int;
     var title:String;
-    //var description:String;
     var completed:Bool;
-    var due_date: Date;
-    var creation_date:Date;
+    var due_date: String?;
+    var creation_date:String?;
     var is_child_task:Bool;
     var parent_id:Int
     
     static let baseURL = "http://0.0.0.0:5000"
     
-    // MARK: Archiving Paths
-    static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("tasks")
-    
-    // Mark: Types
-    struct PropertyKey{
-        static let title = "title"
-        static let desc = "desc"
-    }
     
     // MARK: Initialization
-    init(i:Int, t:String, c:Bool, dd:Date, cd: Date, ict:Bool, pi:Int){
+    init(i:Int, t:String, c:Bool, dd:String, cd: String, ict:Bool, pi:Int){
         id = i;
         title = t;
         //description = d;
@@ -56,19 +45,6 @@ class Task: NSObject, NSCoding, Codable{
     //        is_child_task = false;
     //        parent_id = -1;
     //    }
-    
-    // MARK: NSCoding
-    func encode(with coder: NSCoder) {
-        coder.encode(title, forKey: PropertyKey.title)
-    }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        guard let title = aDecoder.decodeObject(forKey: PropertyKey.title) as? String else{
-            os_log("Unable to decode the name for a Task object.", log: OSLog.default, type: .debug)
-            return nil
-        }
-        self.init(i:0, t:title, c: false, dd: Date(), cd: Date(), ict:false, pi:0)
-    }
     
 
 }
