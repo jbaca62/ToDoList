@@ -1,10 +1,6 @@
 Things That Still Need to Be Done:
-- Add task to DB from app
-	- final task should come from database
-- Remove Description field
-- Update task on DB from app
-- Convert creation_date from String type to Date?
-	- if cannot pull from database set to nil
-	- check what is returned from mysql servers
-- Check best way to save Tasks in Xcode app to on device memory
-- 
+- Clean up details screen
+- Delete task
+- Add Description field
+- Create string date format and store in mysql
+- Swipe to complete task

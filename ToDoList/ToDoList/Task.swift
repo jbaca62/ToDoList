@@ -28,23 +28,12 @@ class Task: Codable{
     init(i:Int, t:String, c:Bool, dd:String, cd: String, ict:Bool, pi:Int){
         id = i;
         title = t;
-        //description = d;
         completed = c;
         due_date = dd;
         creation_date = cd;
         is_child_task = ict;
         parent_id = pi;
     }
-    
-    //    init(){
-    //        id = -1;
-    //        title = "";
-    //        description = "";
-    //        completed = false;
-    //        creationg_date = Date();
-    //        is_child_task = false;
-    //        parent_id = -1;
-    //    }
     
 
 }

@@ -17,6 +17,7 @@ class TaskViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var completeButton: UIButton!
     @IBOutlet weak var idLabel: UILabel!
+    @IBOutlet weak var descriptionField: UITextField!
     
     var task = Task(i: 0, t: "", c: false, dd: "", cd: "", ict: false, pi: 0); // Does this need to be initialized or can it be replaced by Task?
     var addState: Bool?//True if adding task, false if updating task. Set by segue.

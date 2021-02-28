@@ -2,7 +2,7 @@ DB_CONFIG = {
     "host": "192.168.0.100",
     "port": "3306",
     "user": "todolist",
-    "password": "jrb13777",
+    "password": "todolist",
     "database": "todolist",
 }
 

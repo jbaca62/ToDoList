@@ -21,12 +21,6 @@ class TaskTableViewController: UITableViewController {
         
         loadTasksDB()
 
-        //      if let savedTasks = loadTasksDB(){
-//            tasks += savedTasks
-//        }
-//        else{
-//            loadSampleTasks();
-//        }
     }
 
     // MARK: - Table view data source
