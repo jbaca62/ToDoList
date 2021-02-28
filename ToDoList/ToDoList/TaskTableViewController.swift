@@ -21,12 +21,6 @@ class TaskTableViewController: UITableViewController {
         
         loadTasksDB()
 
-        //      if let savedTasks = loadTasksDB(){
-//            tasks += savedTasks
-//        }
-//        else{
-//            loadSampleTasks();
-//        }
     }
 
     // MARK: - Table view data source
@@ -95,10 +89,13 @@ class TaskTableViewController: UITableViewController {
         switch(segue.identifier ?? ""){
         case "AddTask":
             os_log("Adding a new meal.", log: OSLog.default, type: .debug)
-            guard let taskDetailViewController = segue.destination as? TaskViewController else {
+            guard let navViewController = segue.destination as? UINavigationController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            taskDetailViewController.addState = true;
+            guard let addTaskViewController = navViewController.viewControllers.first as? TaskViewController else{
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            addTaskViewController.addState = true
         case "ShowDetail":
             guard let taskDetailViewController = segue.destination as? TaskViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
@@ -127,17 +124,13 @@ class TaskTableViewController: UITableViewController {
             let task = sourceViewController.task
             if !(sourceViewController.addState!){
                 // Update existing task
-                let selectedIndexPath = tableView.indexPathForSelectedRow!
-                updateTaskDB(t:task)
-                tasks[selectedIndexPath.row] = task
-                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+                updateTaskDB(t:task, selectedIndexPath: tableView.indexPathForSelectedRow!)
+               
             }
             else{
                 // Add a new task
                 addTaskDB(t:task)
-                let newIndexPath = IndexPath(row: tasks.count, section: 0);
-                tasks.append(task)
-                tableView.insertRows(at:[newIndexPath], with: .automatic);
+
             }
         }
     }
@@ -147,21 +140,6 @@ class TaskTableViewController: UITableViewController {
     
     //MARK: Private Methods
     
-    
-//    private func saveTasks(){
-//        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(tasks, toFile: Task.ArchiveURL.path)
-//        //insert command to save tasks to database here
-//        if isSuccessfulSave {
-//            os_log("Tasks successfully saved.", log: OSLog.default, type: .debug)
-//        } else {
-//            os_log("Failed to save tasks...", log: OSLog.default, type: .error)
-//        }
-//    }
-//
-//    private func loadTasks() -> [Task]?{
-//        //insert command to load tasks from database here
-//        return NSKeyedUnarchiver.unarchiveObject(withFile: Task.ArchiveURL.path) as? [Task]
-//    }
     
     private func loadTasksDB(){
         let urlAsString = Task.baseURL + "/list"
@@ -175,7 +153,6 @@ class TaskTableViewController: UITableViewController {
                 print(error!.localizedDescription)
                 return
             }
-            
             let decoder = JSONDecoder()
             let jsonResult = try! decoder.decode(TaskData.self, from: data!)
             
@@ -211,16 +188,21 @@ class TaskTableViewController: UITableViewController {
             }
             let decoder = JSONDecoder()
             returned_task = try! decoder.decode(Task.self, from: data!)
+            DispatchQueue.main.async {
+                let newIndexPath = IndexPath(row: self.tasks.count, section: 0);
+                self.tasks.append(returned_task!)
+                self.tableView.insertRows(at:[newIndexPath], with: .automatic);
+            }
                 
         }
         postTask.resume()
     }
     
-    private func updateTaskDB(t:Task){
+    private func updateTaskDB(t:Task, selectedIndexPath:IndexPath){
         let encoder = JSONEncoder()
         let json = (try? encoder.encode(t))!
         
-        let urlAsString = Task.baseURL + "/add"
+        let urlAsString = Task.baseURL + "/update"
         let url = URL(string: urlAsString)!
         
         var request = URLRequest(url: url)
@@ -230,16 +212,23 @@ class TaskTableViewController: UITableViewController {
         
         let urlSession = URLSession.shared
         
-        let postTask = urlSession.dataTask(with: request){ (data, response, error) in
-            if let error = error{
-                print(error)
+        var returned_task:Task?
+        
+        let putTask = urlSession.dataTask(with: request){ (data, response, error) in
+            if (error != nil) {
+                print(error!.localizedDescription)
+                return
             }
-            if let data = data, let dataString = String(data: data, encoding: .utf8){
-                print("Response data string: \n \(dataString)")
+            let decoder = JSONDecoder()
+            returned_task = try! decoder.decode(Task.self, from: data!)
+            DispatchQueue.main.async {
+                
+                self.tasks[selectedIndexPath.row] = returned_task!
+                self.tableView.reloadRows(at: [selectedIndexPath], with: .none)
             }
             
         }
-        postTask.resume()
+        putTask.resume()
     }
 
 }
