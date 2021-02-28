@@ -8,6 +8,7 @@ SQL_get_all_tasks = "SELECT * FROM tasks"
 SQL_set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
 SQL_get_task_by_id = "SELECT * FROM tasks WHERE id = %s"
 SQL_update_task_by_id = "UPDATE tasks SET title = %s, completed = %s WHERE id = %s"
+SQL_delete_task_by_id = "DELETE FROM tasks WHERE id = %s"
 
 
 class Task:
@@ -88,6 +89,20 @@ class Task:
         mydb.commit()
         mycursor.close()
         return task_id
+
+    def delete_task(id):
+        mydb = mysql.connector.connect(
+            host=config.DB_CONFIG["host"],
+            port=config.DB_CONFIG["port"],
+            user=config.DB_CONFIG["user"],
+            password=config.DB_CONFIG["password"],
+            database=config.DB_CONFIG["database"],
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute(SQL_delete_task_by_id, (id,))
+        mydb.commit()
+        mycursor.close()
+        return True
 
     def list_tasks(tasks=None):
         if tasks == None:
