@@ -13,6 +13,7 @@ def homepage():
     return render_template("index.html")
 
 
+## CLEANUP function contains unnecessary parts related to unimplemented child tasks
 @app.route("/add", methods=["POST"])
 def add_task():
     if request.method == "POST":
@@ -25,7 +26,7 @@ def add_task():
             parent_id = data["parent_id"]
             task_id = Task.add_task(title, is_child=is_child, parent_id=parent_id)
         else:
-            task_id = Task.add_task(title)
+            task_id = Task.add_task(title, description=data["description"])
 
         task_dic = Task.get_task_by_id(task_id)
         print(task_dic)
@@ -36,7 +37,9 @@ def add_task():
 def update_task():
     if request.method == "PUT":
         data = request.json
-        task_id = Task.update_task(data["id"], data["title"], data["completed"])
+        task_id = Task.update_task(
+            data["id"], data["title"], data["description"], data["completed"]
+        )
         print(task_id)
         task_dic = Task.get_task_by_id(task_id)
         return jsonify(task_dic)
