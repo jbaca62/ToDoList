@@ -55,6 +55,29 @@ class TaskTableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            // delete task from DB
+            let task = tasks[indexPath.row]
+            let urlAsString = Task.baseURL + "/delete"
+            let url = URL(string: urlAsString)!
+            
+            let encoder = JSONEncoder()
+            let json = (try? encoder.encode(task))!
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = json
+            
+            let urlSession = URLSession.shared
+            
+            let deleteTask = urlSession.dataTask(with: request){ (data, response, error) in
+                if (error != nil) {
+                    print(error!.localizedDescription)
+                    return
+                }
+            }
+            deleteTask.resume()
+            
             // Delete the row from the data source
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)

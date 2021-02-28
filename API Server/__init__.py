@@ -42,6 +42,15 @@ def update_task():
         return jsonify(task_dic)
 
 
+@app.route("/delete", methods=["DELETE"])
+def delete_task():
+    if request.method == "DELETE":
+        data = request.json
+        task_id = data["id"]
+        was_deleted = Task.delete_task(task_id)
+        return "True"
+
+
 """ 
     Returned Schema:
     {data:
