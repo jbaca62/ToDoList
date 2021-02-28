@@ -210,7 +210,7 @@ class TaskTableViewController: UITableViewController {
                 return
             }
             let decoder = JSONDecoder()
-            returned_task = try! decoder.decode(Task.self, from: data!)
+            returned_task = try! decoder.decode(Task.self, from: data!) // Need to fix so execution doesnt terminate when error. Check status code first?
             DispatchQueue.main.async {
                 let newIndexPath = IndexPath(row: self.tasks.count, section: 0);
                 self.tasks.append(returned_task!)

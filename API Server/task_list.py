@@ -2,12 +2,14 @@ from datetime import datetime
 import mysql.connector
 import config
 
-SQL_insert_task = "INSERT INTO tasks (title, completed, creation_date, is_child_task, parent_id) VALUES (%s, %s, %s, %s, %s)"
+SQL_insert_task = "INSERT INTO tasks (title, description, completed, is_child_task, parent_task) VALUES (%s, %s, %s, %s, %s)"
 SQL_get_incomplete_tasks = "SELECT * FROM tasks WHERE completed = 0"
 SQL_get_all_tasks = "SELECT * FROM tasks"
 SQL_set_task_to_complete_by_id = "UPDATE tasks SET completed = 1 WHERE id = %s"
 SQL_get_task_by_id = "SELECT * FROM tasks WHERE id = %s"
-SQL_update_task_by_id = "UPDATE tasks SET title = %s, completed = %s WHERE id = %s"
+SQL_update_task_by_id = (
+    "UPDATE tasks SET title = %s, description = %s, completed = %s WHERE id = %s"
+)
 SQL_delete_task_by_id = "DELETE FROM tasks WHERE id = %s"
 
 
@@ -19,14 +21,14 @@ class Task:
         completed=False,
         creation_date=datetime.now(),
         is_child_task=0,
-        parent_id=0,
+        parent_task=0,
     ):
         self.id = id
         self.title = title
         self.completed = completed
         self.creation_date = creation_date
         self.is_child_task = is_child_task
-        self.parent_id = parent_id
+        self.parent_task = parent_task
 
     def tuple_to_task(data):
         new_task = Task(
@@ -35,7 +37,7 @@ class Task:
             data["completed"],
             data["creation_date"],
             data["is_child_task"],
-            data["parent_id"],
+            data["parent_task"],
         )
         return new_task
 
@@ -43,21 +45,23 @@ class Task:
         new_dict = {}
         new_dict["id"] = data[0]
         new_dict["title"] = data[1]
-        new_dict["completed"] = data[2] == 1
-        new_dict["creation_date"] = data[3]
-        new_dict["due_date"] = data[4]
-        new_dict["is_child_task"] = data[5] == 1
-        new_dict["parent_id"] = data[6]
+        new_dict["description"] = data[2]
+        new_dict["completed"] = data[3] == 1
+        new_dict["creation_date"] = data[4]
+        new_dict["due_date"] = data[5]
+        new_dict["is_child_task"] = data[6] == 1
+        new_dict["parent_task"] = data[7]
         return new_dict
 
+    ## NOTE: Probably going to change so that all fields are passed to add_task()
     def add_task(
         title,
+        description="",
         completed=False,
-        creation_date=datetime.now(),
         is_child=False,
-        parent_id=0,
+        parent_task=0,
     ):
-        vals = (title, completed, creation_date, is_child, parent_id)
+        vals = (title, description, completed, is_child, parent_task)
         mydb = mysql.connector.connect(
             host=config.DB_CONFIG["host"],
             port=config.DB_CONFIG["port"],
@@ -72,8 +76,8 @@ class Task:
         mycursor.close()
         return task_id
 
-    def update_task(id, title, completed):
-        vals = (title, completed, id)
+    def update_task(id, title, description, completed):
+        vals = (title, description, completed, id)
         print(vals)
         mydb = mysql.connector.connect(
             host=config.DB_CONFIG["host"],

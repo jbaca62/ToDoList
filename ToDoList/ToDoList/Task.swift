@@ -15,11 +15,12 @@ class Task: Codable{
     // MARK: Properties
     var id:Int;
     var title:String;
+    var description:String?;
     var completed:Bool;
     var due_date: String?;
     var creation_date:String?;
     var is_child_task:Bool;
-    var parent_id:Int
+    var parent_task:Int
     
     static let baseURL = "http://0.0.0.0:5000"
     
@@ -32,7 +33,7 @@ class Task: Codable{
         due_date = dd;
         creation_date = cd;
         is_child_task = ict;
-        parent_id = pi;
+        parent_task = pi;
     }
     
 
