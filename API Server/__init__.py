@@ -20,7 +20,7 @@ def add_task():
         print(type(data))
         print(data)
         title = data["title"]
-        is_child = data["is_child"]
+        is_child = data["is_child_task"]
         if is_child:
             parent_id = data["parent_id"]
             task_id = Task.add_task(title, is_child=is_child, parent_id=parent_id)

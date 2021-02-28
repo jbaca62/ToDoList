@@ -1,5 +1,5 @@
 DB_CONFIG = {
-    "host": "172.20.10.4",
+    "host": "192.168.0.100",
     "port": "3306",
     "user": "todolist",
     "password": "jrb13777",
